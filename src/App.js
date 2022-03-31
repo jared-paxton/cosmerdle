@@ -1,7 +1,7 @@
 import Game from "./pages/Game";
 
-function App() {
+const App = () => {
   return <Game />;
-}
+};
 
 export default App;
