@@ -1,16 +1,10 @@
 // TODO: add Bearer header for authorization when needed
-import { makeRequest } from "./request";
+import { baseURL } from "./request";
 
-export const getGameState = async (baseURL) => {
+export const fetchGameState = async () => {
   const requestOptions = {
     method: "GET",
   };
 
-  try {
-    const response = await makeRequest(baseURL, requestOptions);
-
-    return { error: response.error, gameStateData: response.data };
-  } catch (e) {
-    return { error: e, gameStateData: null };
-  }
+  return await (await fetch(baseURL, requestOptions)).json();
 };

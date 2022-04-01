@@ -1,37 +1,33 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { getGameState } from "../api/gameState";
+import React, { useState, useEffect } from "react";
+import { fetchGameState } from "../api/gameState";
 import { ErrorToast } from "../components/ErrorToast";
+import { useQuery } from "react-query";
+import Cookies from "js-cookie";
 
 const Game = () => {
-  const [gameState, setGameState] = useState({});
-  const [error, setError] = useState(null);
+  //const [userID, setUserID] = useState(null);
 
-  const getGameStateData = useCallback(async () => {
-    const { gameStateData, error } = await getGameState(
-      "http://localhost:4001/"
-    );
+  const { isLoading, isError, data, error } = useQuery(
+    "gameState",
+    fetchGameState
+  );
 
-    error !== null ? setError(error) : setGameState(gameStateData);
-  }, []);
+  if (!isError) {
+    //setUserID(Cookies.get("userID"));
+    const userID = Cookies.get("userID");
+    console.log("userID:", userID);
+  }
 
-  useEffect(() => {
-    getGameStateData();
-  }, [getGameStateData]);
-
-  const onToastClose = () => {
-    setError(null);
-  };
+  console.log(data);
 
   return (
     <div>
       <h1>The Game/Home Page!</h1>
+      {isLoading && <div>Loading...</div>}
       <div>
-        <pre>{JSON.stringify(gameState, null, 2)}</pre>
+        <pre>{JSON.stringify(data, null, 2)}</pre>
       </div>
-      <ErrorToast
-        errorMsg={error ? error.message : ""}
-        onToastClose={onToastClose}
-      />
+      <ErrorToast errorMsg={isError ? error.message : ""} />
     </div>
   );
 };
